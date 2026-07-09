@@ -6,6 +6,8 @@ import RunModeView from "./components/RunModeView";
 import SetupModeView from "./components/SetupModeView";
 import LoginView from "./components/LoginView";
 import { Scale } from "lucide-react";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const MOCK_ACCOUNTS = [
   { uid: "mock_attorney_adnan", displayName: "Adnan Kagalwalla, Esq.", email: "adnan@kagalwallalaw.com", role: "Managing Partner" },
@@ -13,7 +15,7 @@ const MOCK_ACCOUNTS = [
   { uid: "mock_attorney_marcus", displayName: "Marcus Vance, Esq.", email: "marcus@kagalwallalaw.com", role: "Closing Counsel" },
 ];
 
-export default function App() {
+function Home() {
   const [user, setUser] = useState<AppUser | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [needsAuth, setNeedsAuth] = useState<boolean>(true);
@@ -57,19 +59,19 @@ export default function App() {
   // Load user configuration from localStorage. Backend owns auth/tokens.
   useEffect(() => {
     const defaultConfig: SystemPromptConfig = {
-        role: "Real Estate Law & Closing Partner",
-        volume: "Medium (30 - 100 emails/day)",
-        emailMix: [
-          "Client inquiries, escrow files, and closing disclosures",
-          "Official title objections, surveys, and deed filings",
-          "Commercial lease negotiations, NNN redlines, and contract releases"
-        ],
-        painPoints: [
-          "Missing critical closing deadlines or contractual contingency windows",
-          "Failing to identify and isolate attorney-client privileged strings"
-        ],
-        responsiveness: "Same-Day Business Closure (< 8 Hours)"
-      };
+      role: "Real Estate Law & Closing Partner",
+      volume: "Medium (30 - 100 emails/day)",
+      emailMix: [
+        "Client inquiries, escrow files, and closing disclosures",
+        "Official title objections, surveys, and deed filings",
+        "Commercial lease negotiations, NNN redlines, and contract releases"
+      ],
+      painPoints: [
+        "Missing critical closing deadlines or contractual contingency windows",
+        "Failing to identify and isolate attorney-client privileged strings"
+      ],
+      responsiveness: "Same-Day Business Closure (< 8 Hours)"
+    };
 
     if (!user) {
       setConfig(defaultConfig);
@@ -146,7 +148,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
         <LoginView onLogin={handleLogin} isLoggingIn={isLoggingIn} />
-        
+
         <footer className="bg-slate-50 border-t border-slate-200 py-8 text-center text-slate-500 text-xs shadow-inner">
           <p className="font-sans font-medium text-slate-600">
             &copy; 2026 Kagalwalla Law Offices LLC. All rights reserved. Real Estate Transaction and Legacy Counsel.
@@ -303,5 +305,16 @@ export default function App() {
         </p>
       </footer>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      </Routes>
+    </Router>
   );
 }
