@@ -14,7 +14,7 @@ export default defineConfig(() => {
     server: {
       proxy: {
         '/api': {
-          target: 'https://ai-backend-wc01.onrender.com',
+          target: 'https://apikagallaw.legaleasesolutions.co.in',
           changeOrigin: true,
         },
       },

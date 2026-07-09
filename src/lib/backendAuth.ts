@@ -1,6 +1,6 @@
 import { AppUser } from "../types";
 
-export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "https://ai-backend-wc01.onrender.com").replace(/\/$/, "");
+export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "https://apikagallaw.legaleasesolutions.co.in").replace(/\/$/, "");
 
 function mapBackendUser(user: any): AppUser | null {
   if (!user) return null;

@@ -1,6 +1,6 @@
 import { ThreadMessage, GmailAttachmentInfo } from "../types";
 import type { PropertyTransactionFromEmail } from "../types";
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "https://ai-backend-wc01.onrender.com").replace(/\/$/, "");
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "https://apikagallaw.legaleasesolutions.co.in").replace(/\/$/, "");
 
 async function apiFetch(path: string, init: RequestInit = {}) {
   const res = await fetch(`${API_BASE_URL}${path}`, {
