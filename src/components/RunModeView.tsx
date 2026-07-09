@@ -251,9 +251,9 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
   const [emailAttachmentFiles, setEmailAttachmentFiles] = useState<UploadedDocument[]>([]);
   const [isLoadingAttachments, setIsLoadingAttachments] = useState<boolean>(false);
 
-    const [isDragging, setIsDragging] = useState<boolean>(false);
-    const [uploadCategory, setUploadCategory] = useState<UploadedDocument["category"]>("Deed");
-    const [uploadMatter, setUploadMatter] = useState<string>("742 Oakwood Lane Closing");
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [uploadCategory, setUploadCategory] = useState<UploadedDocument["category"]>("Deed");
+  const [uploadMatter, setUploadMatter] = useState<string>("742 Oakwood Lane Closing");
 
   // Property Transactions States
   const [transactions, setTransactions] = useState<PropertyTransaction[]>([
@@ -364,7 +364,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
   const [editedEventDateTime, setEditedEventDateTime] = useState<string>("");
   const [editedEventDesc, setEditedEventDesc] = useState<string>("");
   const [isSendingReply, setIsSendingReply] = useState<boolean>(false);
-  
+
   // Explicit calendar confirmation
   const [isEventConfirmed, setIsEventConfirmed] = useState<boolean>(false);
 
@@ -399,9 +399,9 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
   // Synchronize delegation and task state when selectedThread changes
   useEffect(() => {
     if (!selectedThread) return;
-    
+
     const analysis = selectedThread.analysis;
-    
+
     if (selectedThread.triageStatus === "delegated") {
       setTaskMode("delegate");
       if (selectedThread.delegatedTo) {
@@ -419,10 +419,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
   useEffect(() => {
     if (!selectedThread) return;
     const baseTitle = selectedThread.analysis?.suggestedTasks[0]?.title || `Follow up: ${selectedThread.subject}`;
-    
+
     if (taskMode === "delegate") {
       setEditedTaskTitle(`[Delegate: ${delegationAssignee}] ${baseTitle}`);
-      
+
       const notesLines = [
         `==================================================`,
         `📢 DELEGATED LEGAL ASSIGNMENT`,
@@ -445,7 +445,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
       setEditedTaskNotes(notesLines.join("\n"));
     } else {
       setEditedTaskTitle(baseTitle);
-      
+
       const notesLines = [
         `==================================================`,
         `📝 PERSONAL TRANSACTION TASK`,
@@ -470,7 +470,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
     if (selectedThread) {
       const subjectLower = selectedThread.subject.toLowerCase();
       const bodyLower = selectedThread.body.toLowerCase();
-      
+
       if (subjectLower.includes("pines") || bodyLower.includes("pines") || subjectLower.includes("whispering")) {
         setSelectedMatter("1044 Whispering Pines Dr Acquisition (Matter #2026-RE-1044)");
       } else if (subjectLower.includes("oakwood") || bodyLower.includes("oakwood")) {
@@ -613,7 +613,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
     setThreads((prev) => [newThread, ...prev]);
     setSuccessMsg("Injected test email into active triage stream queue! Click on it to run legal analysis.");
     setTimeout(() => setSuccessMsg(null), 4000);
-    
+
     // Auto-select and analyze the newly simulated thread
     analyzeThread(newThread);
   };
@@ -638,7 +638,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
     setSelectedThread(prev => prev && prev.id === thread.id ? { ...prev, analyzing: true } : prev);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"}/api/triage/email`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || "https://ai-backend-wc01.onrender.com"}/api/triage/email`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -686,7 +686,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
         suggestedAssignee: rawAnalysis.suggested_assignee || undefined,
         delegationReason: rawAnalysis.delegation_reason || undefined,
       };
-      
+
       setThreads(prev =>
         prev.map(t => {
           if (t.id === thread.id) {
@@ -718,7 +718,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
       console.warn("Triage analyzer notice (normal if rate-limited):", err?.message || err);
       setErrorMsg("Backend triage offline/unresponsive. Loaded fallback real estate heuristics for local testing.");
       setTimeout(() => setErrorMsg(null), 4000);
-      
+
       // Fallback analysis matching mock cases
       const fallbackAnalysis: TriageAnalysis = {
         classification: "Closings",
@@ -754,7 +754,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
   const handleSmokeballFile = () => {
     if (!selectedThread) return;
     setIsFiling(true);
-    
+
     setTimeout(() => {
       setFiledMatters(prev => ({
         ...prev,
@@ -930,7 +930,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const filesList = Array.from(e.dataTransfer.files) as File[];
       const newDocs: UploadedDocument[] = filesList.map((file, index) => ({
@@ -1008,7 +1008,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
   const filteredThreads = threads.filter(thread => {
     const isFilteredByPriority = filterPriority === "All" || thread.analysis?.priority === filterPriority;
     if (!isFilteredByPriority) return false;
-    
+
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
     return (
@@ -1026,7 +1026,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
   return (
     <div className="bg-slate-50 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        
+
         {/* Welcome Header Deck Card */}
         <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm relative overflow-hidden">
           <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-slate-100/50 to-transparent pointer-events-none" />
@@ -1047,7 +1047,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                 Manage high-volume real estate transactions, title objections, and estate planning documents with AI-driven compliance guardrails. Lock escrow milestones, docket critical deadlines, and archive records in Smokeball.
               </p>
             </div>
-            
+
             <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center space-x-3.5 shadow-sm min-w-[220px]">
               <div className="bg-[#0057A4]/10 p-2.5 rounded-lg text-[#0057A4] border border-[#0057A4]/20">
                 <Briefcase className="h-5 w-5" />
@@ -1098,11 +1098,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                 <button
                   key={tab.id}
                   onClick={() => setActiveDashboard(tab.id as any)}
-                  className={`flex items-center space-x-2 py-3.5 px-5 border-b-2 font-sans text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
-                    isActive
+                  className={`flex items-center space-x-2 py-3.5 px-5 border-b-2 font-sans text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${isActive
                       ? "border-[#0057A4] text-[#0057A4] bg-white rounded-t-xl"
                       : "border-transparent text-slate-500 hover:text-[#0057A4] hover:border-slate-300"
-                  }`}
+                    }`}
                 >
                   <Icon className={`h-4 w-4 ${isActive ? "text-[#0057A4]" : "text-slate-400"}`} />
                   <span>{tab.name}</span>
@@ -1115,7 +1114,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
         {/* DASHBOARD 1: TRIAGE INBOX STREAM */}
         {activeDashboard === "triage" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
+
             {/* Left Queue Panel (4 columns) */}
             <div className="lg:col-span-4 space-y-4">
               <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4">
@@ -1126,11 +1125,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                       <button
                         key={p}
                         onClick={() => setFilterPriority(p as any)}
-                        className={`text-[10px] px-2.5 py-1 rounded font-semibold border transition ${
-                          filterPriority === p
+                        className={`text-[10px] px-2.5 py-1 rounded font-semibold border transition ${filterPriority === p
                             ? "bg-[#0057A4] text-white border-[#0057A4]"
                             : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
-                        }`}
+                          }`}
                       >
                         {p}
                       </button>
@@ -1169,29 +1167,27 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                         <button
                           key={thread.id}
                           onClick={() => analyzeThread(thread)}
-                          className={`w-full text-left p-3.5 rounded-xl border flex justify-between gap-3 transition-all duration-150 ${
-                            isSelected
+                          className={`w-full text-left p-3.5 rounded-xl border flex justify-between gap-3 transition-all duration-150 ${isSelected
                               ? "bg-slate-50 border-[#0057A4] ring-1 ring-[#0057A4]/20"
                               : "border-slate-200 bg-white hover:bg-slate-50/50"
-                          }`}
+                            }`}
                         >
                           <div className="space-y-1.5 flex-1 min-w-0">
                             <div className="flex items-center justify-between text-slate-500 text-[10px] font-semibold">
                               <span className="truncate max-w-[150px]">{thread.sender}</span>
                               <span>{new Date(thread.date).toLocaleDateString()}</span>
                             </div>
-                            
+
                             <h4 className="font-sans font-bold text-slate-800 text-xs truncate">{thread.subject}</h4>
                             <p className="text-slate-400 text-[11px] truncate leading-normal">{thread.snippet}</p>
 
                             {/* Tags */}
                             <div className="flex flex-wrap items-center gap-1.5 pt-1">
                               {thread.analysis?.priority && (
-                                <span className={`text-[9px] font-semibold px-2 py-0.5 rounded border uppercase tracking-wider ${
-                                  thread.analysis.priority === "High"
+                                <span className={`text-[9px] font-semibold px-2 py-0.5 rounded border uppercase tracking-wider ${thread.analysis.priority === "High"
                                     ? "bg-red-50 text-red-700 border-red-200 animate-pulse"
                                     : "bg-slate-100 text-slate-600 border-slate-200"
-                                }`}>
+                                  }`}>
                                   {thread.analysis.priority} Priority
                                 </span>
                               )}
@@ -1316,7 +1312,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
             <div className="lg:col-span-8 space-y-6">
               {selectedThread ? (
                 <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                  
+
                   {/* Selected Email Header */}
                   <div className="p-5 border-b border-slate-200 bg-slate-50/50">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
@@ -1424,7 +1420,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                     </div>
                   ) : selectedThread.analysis ? (
                     <div className="divide-y divide-slate-100">
-                      
+
                       {/* Classification details */}
                       <div className="p-5 space-y-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
@@ -1435,14 +1431,13 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                                 {selectedThread.analysis.classification}
                               </span>
                             </div>
-                            
+
                             <div className="flex items-center space-x-2">
                               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Priority:</span>
-                              <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-                                selectedThread.analysis.priority === "High"
+                              <span className={`text-xs font-bold px-3 py-1 rounded-full ${selectedThread.analysis.priority === "High"
                                   ? "bg-red-50 text-red-700 font-extrabold border border-red-200"
                                   : "bg-slate-100 text-slate-600 border border-slate-200"
-                              }`}>
+                                }`}>
                                 {selectedThread.analysis.priority || "Medium"}
                               </span>
                             </div>
@@ -1560,7 +1555,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
 
                       {/* Google Tasks / Calendar Actionables */}
                       <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/50">
-                        
+
                         {/* Task Planner Box */}
                         <div className="space-y-3 bg-white p-4.5 rounded-xl border border-slate-200">
                           <h4 className="text-xs font-bold text-[#0057A4] uppercase tracking-wider flex items-center space-x-1.5">
@@ -1574,21 +1569,19 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                               <div className="flex space-x-1.5 mt-1">
                                 <button
                                   onClick={() => setTaskMode("personal")}
-                                  className={`flex-1 py-1.5 text-xs font-semibold rounded-lg border transition ${
-                                    taskMode === "personal"
+                                  className={`flex-1 py-1.5 text-xs font-semibold rounded-lg border transition ${taskMode === "personal"
                                       ? "bg-[#0057A4] text-white border-[#0057A4]"
                                       : "bg-slate-50 text-slate-600 border-slate-200"
-                                  }`}
+                                    }`}
                                 >
                                   Personal Task
                                 </button>
                                 <button
                                   onClick={() => setTaskMode("delegate")}
-                                  className={`flex-1 py-1.5 text-xs font-semibold rounded-lg border transition ${
-                                    taskMode === "delegate"
+                                  className={`flex-1 py-1.5 text-xs font-semibold rounded-lg border transition ${taskMode === "delegate"
                                       ? "bg-[#0057A4] text-white border-[#0057A4]"
                                       : "bg-slate-50 text-slate-600 border-slate-200"
-                                  }`}
+                                    }`}
                                 >
                                   Delegate Task
                                 </button>
@@ -1745,11 +1738,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                       <span>Workspace Conduit</span>
                     </span>
                     {user ? (
-                      <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center space-x-1 border ${
-                        accessToken && accessToken !== "mock_access_token_kagalwalla" && !accessToken.startsWith("mock_")
+                      <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center space-x-1 border ${accessToken && accessToken !== "mock_access_token_kagalwalla" && !accessToken.startsWith("mock_")
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                           : "bg-amber-50 text-amber-700 border-amber-200 animate-pulse"
-                      }`}>
+                        }`}>
                         <span className="h-1.5 w-1.5 rounded-full bg-current shrink-0" />
                         <span>{accessToken && accessToken !== "mock_access_token_kagalwalla" && !accessToken.startsWith("mock_") ? "Live Workspace" : "Sandbox Active"}</span>
                       </span>
@@ -1896,13 +1888,12 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                         <span className="text-[10px] uppercase font-bold text-slate-400">Property Address</span>
                         <h3 className="text-base font-bold text-slate-800 mt-0.5">{tx.address}</h3>
                       </div>
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border ${
-                        tx.status === "Pending Signatures"
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border ${tx.status === "Pending Signatures"
                           ? "bg-amber-50 text-amber-700 border-amber-200"
                           : tx.status === "Title Objection Filed"
-                          ? "bg-red-50 text-red-700 border-red-200"
-                          : "bg-blue-50 text-blue-700 border-blue-200"
-                      }`}>
+                            ? "bg-red-50 text-red-700 border-red-200"
+                            : "bg-blue-50 text-blue-700 border-blue-200"
+                        }`}>
                         {tx.status}
                       </span>
                     </div>
@@ -1944,13 +1935,12 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                             <span className="text-slate-700 font-medium truncate max-w-[150px]">{con.name}</span>
                             <div className="flex items-center space-x-1.5">
                               <span className="text-[10px] text-slate-400 font-mono">{con.date}</span>
-                              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${
-                                con.status === "Approved"
+                              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${con.status === "Approved"
                                   ? "bg-emerald-100 text-emerald-800"
                                   : con.status === "At Risk"
-                                  ? "bg-red-100 text-red-800 animate-pulse"
-                                  : "bg-slate-200 text-slate-600"
-                              }`}>
+                                    ? "bg-red-100 text-red-800 animate-pulse"
+                                    : "bg-slate-200 text-slate-600"
+                                }`}>
                                 {con.status}
                               </span>
                             </div>
@@ -1998,7 +1988,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
         {/* DASHBOARD 3: ROLES & SYSTEM SETTINGS */}
         {activeDashboard === "settings" && (
           <div className="space-y-6">
-            
+
             {/* Header Block */}
             <div className="bg-white rounded-xl p-5 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -2018,7 +2008,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
 
             {/* Role Switcher Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
+
               {/* User Role Card */}
               <button
                 type="button"
@@ -2027,11 +2017,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                   setSuccessMsg("Security credentials adjusted to Associate Counsel (User).");
                   setTimeout(() => setSuccessMsg(null), 2500);
                 }}
-                className={`text-left p-5 rounded-2xl border transition-all relative overflow-hidden flex flex-col justify-between ${
-                  userRole === "User"
+                className={`text-left p-5 rounded-2xl border transition-all relative overflow-hidden flex flex-col justify-between ${userRole === "User"
                     ? "bg-white border-[#0057A4] ring-2 ring-[#0057A4]/15 shadow-sm"
                     : "bg-white/60 border-slate-200 hover:border-slate-300 hover:bg-white"
-                }`}
+                  }`}
               >
                 {userRole === "User" && (
                   <div className="absolute right-0 top-0 bg-[#0057A4] text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
@@ -2039,9 +2028,8 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                   </div>
                 )}
                 <div className="space-y-3">
-                  <div className={`h-10 w-10 rounded-xl flex items-center justify-center border ${
-                    userRole === "User" ? "bg-[#0057A4]/10 text-[#0057A4] border-[#0057A4]/20" : "bg-slate-50 text-slate-400 border-slate-200"
-                  }`}>
+                  <div className={`h-10 w-10 rounded-xl flex items-center justify-center border ${userRole === "User" ? "bg-[#0057A4]/10 text-[#0057A4] border-[#0057A4]/20" : "bg-slate-50 text-slate-400 border-slate-200"
+                    }`}>
                     <User className="h-5 w-5" />
                   </div>
                   <div>
@@ -2055,9 +2043,8 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                   <span className={userRole === "User" ? "text-[#0057A4]" : "text-slate-400"}>
                     Standard Permission Scope
                   </span>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                    userRole === "User" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-slate-100 text-slate-500"
-                  }`}>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${userRole === "User" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-slate-100 text-slate-500"
+                    }`}>
                     Read & Write
                   </span>
                 </div>
@@ -2071,11 +2058,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                   setSuccessMsg("Security level elevated to Managing Partner (Admin). Full administrative override unlocked.");
                   setTimeout(() => setSuccessMsg(null), 2500);
                 }}
-                className={`text-left p-5 rounded-2xl border transition-all relative overflow-hidden flex flex-col justify-between ${
-                  userRole === "Admin"
+                className={`text-left p-5 rounded-2xl border transition-all relative overflow-hidden flex flex-col justify-between ${userRole === "Admin"
                     ? "bg-white border-[#0057A4] ring-2 ring-[#0057A4]/15 shadow-sm"
                     : "bg-white/60 border-slate-200 hover:border-slate-300 hover:bg-white"
-                }`}
+                  }`}
               >
                 {userRole === "Admin" && (
                   <div className="absolute right-0 top-0 bg-amber-600 text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
@@ -2083,9 +2069,8 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                   </div>
                 )}
                 <div className="space-y-3">
-                  <div className={`h-10 w-10 rounded-xl flex items-center justify-center border ${
-                    userRole === "Admin" ? "bg-amber-500/10 text-amber-700 border-amber-500/20" : "bg-slate-50 text-slate-400 border-slate-200"
-                  }`}>
+                  <div className={`h-10 w-10 rounded-xl flex items-center justify-center border ${userRole === "Admin" ? "bg-amber-500/10 text-amber-700 border-amber-500/20" : "bg-slate-50 text-slate-400 border-slate-200"
+                    }`}>
                     <Shield className="h-5 w-5" />
                   </div>
                   <div>
@@ -2099,9 +2084,8 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                   <span className={userRole === "Admin" ? "text-amber-700" : "text-slate-400"}>
                     Elevated Compliance Scope
                   </span>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                    userRole === "Admin" ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-slate-100 text-slate-500"
-                  }`}>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${userRole === "Admin" ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-slate-100 text-slate-500"
+                    }`}>
                     Full Override & Audit
                   </span>
                 </div>
@@ -2111,10 +2095,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
 
             {/* Dynamic Settings Content based on Role Selection */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              
+
               {/* Left Column: Role-Specific Settings Controls (5 Columns) */}
               <div className="lg:col-span-5 space-y-6">
-                
+
                 {userRole === "Admin" ? (
                   <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5 animate-in fade-in duration-200">
                     <div>
@@ -2126,7 +2110,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                     </div>
 
                     <div className="space-y-4">
-                      
+
                       <div className="flex items-start justify-between gap-3 p-3 bg-slate-50 border border-slate-150 rounded-xl">
                         <div className="space-y-1">
                           <label className="text-xs font-bold text-slate-800 block">Enforce Dual-Channel Escrow Wire Approvals</label>
@@ -2170,7 +2154,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                     </div>
 
                     <div className="space-y-4">
-                      
+
                       <div className="flex items-start justify-between gap-3 p-3 bg-slate-50 border border-slate-150 rounded-xl">
                         <div className="space-y-1">
                           <label className="text-xs font-bold text-slate-800 block">Daily Correspondence Email Recap</label>
@@ -2204,12 +2188,12 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                     </div>
                   </div>
                 )}
-                
+
               </div>
 
               {/* Right Column: Firm Audit Ledger & Action Console (7 Columns) */}
               <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
-                
+
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
                   <div>
                     <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
@@ -2236,13 +2220,12 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                         <div className="space-y-0.5 min-w-0">
                           <div className="flex items-center space-x-2">
                             <span className="text-xs font-bold text-slate-800">{log.user}</span>
-                            <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
-                              log.category === "Security"
+                            <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${log.category === "Security"
                                 ? "bg-amber-100 text-amber-800"
                                 : log.category === "Filing"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-slate-100 text-slate-600"
-                            }`}>
+                                  ? "bg-blue-100 text-blue-800"
+                                  : "bg-slate-100 text-slate-600"
+                              }`}>
                               {log.category}
                             </span>
                           </div>
@@ -2296,11 +2279,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                       setSuccessMsg("Firm compliance action ledger cleared successfully.");
                       setTimeout(() => setSuccessMsg(null), 2500);
                     }}
-                    className={`px-4 py-2.5 rounded-xl text-xs font-semibold border transition text-center flex items-center justify-center space-x-1 shrink-0 ${
-                      userRole === "Admin"
+                    className={`px-4 py-2.5 rounded-xl text-xs font-semibold border transition text-center flex items-center justify-center space-x-1 shrink-0 ${userRole === "Admin"
                         ? "bg-white hover:bg-red-50 text-red-600 border-red-200 hover:border-red-300"
                         : "bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed"
-                    }`}
+                      }`}
                     title={userRole === "Admin" ? "Clear Ledger" : "Requires Admin Role"}
                   >
                     <Trash2 className="h-4 w-4 shrink-0" />
@@ -2318,7 +2300,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
         {/* DASHBOARD 4: DOCUMENT UPLOADS */}
         {activeDashboard === "documents" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
+
             {/* Left Upload Panel (4 columns) */}
             <div className="lg:col-span-4 space-y-4">
               <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4">
@@ -2380,11 +2362,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  className={`border-2 border-dashed rounded-xl p-8 text-center transition flex flex-col items-center justify-center space-y-2 cursor-pointer ${
-                    isDragging
+                  className={`border-2 border-dashed rounded-xl p-8 text-center transition flex flex-col items-center justify-center space-y-2 cursor-pointer ${isDragging
                       ? "border-[#0057A4] bg-[#0057A4]/5"
                       : "border-slate-200 hover:border-slate-300 bg-slate-50"
-                  }`}
+                    }`}
                 >
                   <Upload className="h-8 w-8 text-[#0057A4]" />
                   <div className="text-xs font-semibold text-slate-700">
@@ -2512,11 +2493,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
                       </div>
 
                       <div className="flex items-center space-x-3">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
-                          doc.status === "Verified"
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${doc.status === "Verified"
                             ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                             : "bg-amber-50 text-amber-700 border-amber-100"
-                        }`}>
+                          }`}>
                           {doc.status}
                         </span>
 
@@ -2539,11 +2519,10 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
 
                               deleteDocument(doc.id);
                             }}
-                            className={`p-1.5 rounded-lg transition ${
-                              userRole === "Admin"
+                            className={`p-1.5 rounded-lg transition ${userRole === "Admin"
                                 ? "text-slate-400 hover:text-red-600 hover:bg-red-50"
                                 : "text-slate-300 cursor-not-allowed"
-                            }`}
+                              }`}
                             title={userRole === "Admin" ? "Delete document" : "Requires Admin Role"}
                           >
                             {userRole === "Admin" ? (
@@ -2566,7 +2545,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
         {/* DASHBOARD 5: APPOINTMENTS & CONSULTATIONS */}
         {activeDashboard === "appointments" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
+
             {/* Left Scheduling Form (4 columns) */}
             <div className="lg:col-span-4 space-y-4">
               <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4">
@@ -2702,9 +2681,9 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
         {/* DASHBOARD 6: ANALYTICS & INSIGHTS VIEW */}
         {activeDashboard === "analytics" && (
           <div className="space-y-6">
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              
+
               <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs relative overflow-hidden">
                 <div className="absolute right-4 top-4 text-[#0057A4]/10">
                   <Mail className="h-12 w-12 text-[#0057A4]" />
