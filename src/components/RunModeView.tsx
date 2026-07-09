@@ -638,7 +638,7 @@ export default function RunModeView({ user, accessToken, config, needsAuth, onTr
     setSelectedThread(prev => prev && prev.id === thread.id ? { ...prev, analyzing: true } : prev);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || "https://ai-backend-wc01.onrender.com"}/api/triage/email`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || "https://apikagallaw.legaleasesolutions.co.in"}/api/triage/email`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
